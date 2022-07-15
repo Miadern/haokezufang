@@ -1,12 +1,16 @@
 <template>
-  <div>
+  <div class="main">
     <!-- 1级路由入口 -->
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {}
+  }
+}
 </script>
 
-<style></style>
+<style scoped></style>
