@@ -52,11 +52,16 @@ export default {
       forbidClick: true,
       duration: 0
     })
-    const res = await getSell(token)
-    if (res.data.status !== 200) return this.$toast(res.data.description)
-    this.houseList = res.data.body
-    this.$toast.clear()
-    this.loading = false
+
+    try {
+      const res = await getSell(token)
+      if (res.data.status !== 200) return this.$toast(res.data.description)
+      this.houseList = res.data.body
+      this.$toast.clear()
+      this.loading = false
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 </script>

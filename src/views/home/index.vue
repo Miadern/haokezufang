@@ -14,7 +14,7 @@
     <!-- 搜索栏 -->
     <van-search v-model="value" show-action placeholder="请输入小区或地址"
       ><template #label>
-        <div @click="mapFn">北京 <van-icon name="arrow-down" /></div
+        <div @click="mapFn">{{ cityAction }}<van-icon name="arrow-down" /></div
       ></template>
       <template #action>
         <div @click="onSearch"><van-icon name="expand-o" /></div>
@@ -79,14 +79,15 @@
 </template>
 
 <script>
-import { getSwiper, getGroups } from '@/api/home'
+import { getSwiper, getGroups, getMapID } from '@/api/home'
 
 export default {
   data() {
     return {
       value: '',
       swiperList: [],
-      getGroupsList: []
+      getGroupsList: [],
+      cityAction: this.$route.query.cityAction || '北京'
     }
   },
   async created() {
@@ -99,12 +100,13 @@ export default {
     }
     // 获取租房小组getGroups
     try {
-      const res1 = await getGroups()
-      console.log(res1)
+      const getMapIDres = await getMapID(this.cityAction)
+      const res1 = await getGroups(getMapIDres.data.body.value)
       this.getGroupsList = res1.data.body
     } catch (err) {
-      console.log('轮播图问题' + err)
+      console.log('发生错误' + err)
     }
+    // 获取当前地区
   },
   methods: {
     onSearch() {

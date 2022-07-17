@@ -7,10 +7,20 @@ export const getSwiper = () => {
   })
 }
 // 请求租房小组
-export const getGroups = () => {
+export const getGroups = (area) => {
   return request({
     url: '/home/groups',
     method: 'get',
-    params: { area: 'AREA|88cff55c-aaa4-e2e0' }
+    params: { area }
+  })
+}
+
+// 获取本地区信息
+
+export const getMapID = (name) => {
+  return request({
+    url: '/area/info',
+    method: 'get',
+    params: { name }
   })
 }

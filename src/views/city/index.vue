@@ -7,36 +7,147 @@
       left-arrow
       @click-left="onClickLeft"
     />
-    <!-- 内容 -->
-    <van-index-bar :index-list="indexList">
-      <van-index-anchor index="1">标题1</van-index-anchor>
-      <van-cell title="文本" />
-      <van-cell title="文本" />
-      <van-cell title="文本" />
-
-      <van-index-anchor index="2">标题2</van-index-anchor>
-      <van-cell title="文本" />
-      <van-cell title="文本" />
-      <van-cell title="文本" />
+    <!-- 内容    :index-list="indexList"-->
+    <van-index-anchor index="#">当前城市</van-index-anchor>
+    <van-cell :title="cityNow" @click="sendCityFn(cityNow)" />
+    <van-index-anchor index="热">热门城市</van-index-anchor>
+    <van-cell
+      :title="item.label"
+      v-for="item in cityHot"
+      :key="item.label"
+      @click="sendCityFn(item.label)"
+    />
+    <van-index-bar
+      :index-list="indexList"
+      v-for="(item, index) in codeCity"
+      :key="index"
+    >
+      <van-index-anchor :index="indexList[index]">
+        {{ item.index }}</van-index-anchor
+      >
+      <van-cell
+        title="文本"
+        v-for="(item, index) in item.cname"
+        :key="index"
+        @click="sendCityFn(item)"
+      >
+        <template #title>{{ item }}</template>
+      </van-cell>
     </van-index-bar>
   </div>
 </template>
 
 <script>
-import { getCity } from '@/api/city'
+import { getCity, getCityhot } from '@/api/city'
 export default {
   async created() {
-    const res = await getCity(1)
-    console.log(res)
+    // 获取城市信息
+    try {
+      const res = await getCity(1)
+      this.cityList = res.data.body
+      for (let i = 0; i < 26; i++) {
+        const item = this.cityList.filter((item) => {
+          return item.short.substr(0, 1).toUpperCase() === this.indexListX[i]
+        })
+        const obj = {
+          index: this.indexListX[i],
+          cname: []
+        }
+        item.forEach((item) => {
+          obj.cname.push(item.label)
+        })
+        this.codeCity.push(obj)
+      }
+      this.codeCity.forEach((item) => {
+        if (item.cname.length === 0) {
+          item.cname.push('暂无城市')
+        }
+      })
+
+      // 获取热门
+      const resHot = await getCityhot()
+      this.cityHot = resHot.data.body
+    } catch (error) {
+      console.log(error)
+    }
   },
   data() {
     return {
-      indexList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      cityNow: '北京',
+      cityHot: [],
+      cityList: [],
+      indexList: [
+        '#',
+        '热',
+        'A',
+        'B',
+        'C',
+        'D',
+        'E',
+        'F',
+        'G',
+        'H',
+        'I',
+        'J',
+        'K',
+        'L',
+        'M',
+        'N',
+        'O',
+        'P',
+        'Q',
+        'R',
+        'S',
+        'T',
+        'U',
+        'V',
+        'W',
+        'X',
+        'Y',
+        'Z'
+      ],
+      indexListX: [
+        'A',
+        'B',
+        'C',
+        'D',
+        'E',
+        'F',
+        'G',
+        'H',
+        'I',
+        'J',
+        'K',
+        'L',
+        'M',
+        'N',
+        'O',
+        'P',
+        'Q',
+        'R',
+        'S',
+        'T',
+        'U',
+        'V',
+        'W',
+        'X',
+        'Y',
+        'Z'
+      ],
+      codeCity: []
     }
   },
   methods: {
     onClickLeft() {
       this.$router.back()
+    },
+    sendCityFn(val) {
+      this.$router.push({
+        path: '/home',
+        query: {
+          cityAction: val
+        }
+      })
     }
   }
 }

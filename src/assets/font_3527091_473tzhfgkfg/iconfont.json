@@ -1,0 +1,79 @@
+{
+  "id": "3527091",
+  "name": "hao'ke",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "2044433",
+      "name": "沙发",
+      "font_class": "shafa",
+      "unicode": "e652",
+      "unicode_decimal": 58962
+    },
+    {
+      "icon_id": "4762912",
+      "name": "冰箱",
+      "font_class": "bingxiang",
+      "unicode": "e90b",
+      "unicode_decimal": 59659
+    },
+    {
+      "icon_id": "4762919",
+      "name": "空调",
+      "font_class": "kongtiao",
+      "unicode": "e90d",
+      "unicode_decimal": 59661
+    },
+    {
+      "icon_id": "5024131",
+      "name": "衣柜",
+      "font_class": "yigui",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "6217346",
+      "name": "暖气",
+      "font_class": "nuanqi",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "8974240",
+      "name": "热水器",
+      "font_class": "reshuiqi",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "17858176",
+      "name": "天然气",
+      "font_class": "tianranqi-01",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "18169604",
+      "name": "电视,显示器,显示屏,电视机,液晶显示器",
+      "font_class": "lcd",
+      "unicode": "e92b",
+      "unicode_decimal": 59691
+    },
+    {
+      "icon_id": "152674",
+      "name": "宽带",
+      "font_class": "kuandai",
+      "unicode": "e6ba",
+      "unicode_decimal": 59066
+    },
+    {
+      "icon_id": "658907",
+      "name": "洗衣机",
+      "font_class": "xiyiji",
+      "unicode": "e67d",
+      "unicode_decimal": 59005
+    }
+  ]
+}

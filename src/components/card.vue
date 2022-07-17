@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" @click="houseGo(List.houseCode)">
     <div class="img">
       <img :src="`http://liufusong.top:8080${List.houseImg}`" alt="" />
     </div>
@@ -16,6 +16,16 @@
 export default {
   props: {
     List: Object
+  },
+  methods: {
+    houseGo(houseId) {
+      this.$router.push({
+        path: 'houseInfo',
+        query: {
+          houseId
+        }
+      })
+    }
   }
 }
 </script>

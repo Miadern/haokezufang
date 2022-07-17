@@ -41,11 +41,14 @@ export default {
           path: 'collection'
         }
       })
-    const res = await getCollection(token)
-
-    if (res.data.status !== 200) return this.$toast(res.data.description)
-    this.collectList = res.data.body
-    this.loading = false
+    try {
+      const res = await getCollection(token)
+      if (res.data.status !== 200) return this.$toast(res.data.description)
+      this.collectList = res.data.body
+      this.loading = false
+    } catch (error) {
+      console.log(error)
+    }
   },
   methods: {
     onClickLeft() {

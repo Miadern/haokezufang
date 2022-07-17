@@ -4,6 +4,9 @@ import router from './router'
 import store from './store'
 // 引入flexible
 import 'amfe-flexible'
+// 引入icon
+
+import '@/assets/font_3527091_473tzhfgkfg/iconfont.css'
 
 // 引入vant
 import Vant from 'vant'
