@@ -59,6 +59,14 @@ const routes = [
   {
     path: '/houseInfo',
     component: () => import('@/views/houseInfo')
+  },
+  {
+    path: '/publish',
+    component: () => import('@/views/publish')
+  },
+  {
+    path: '/search',
+    component: () => import('@/views/search')
   }
 ]
 
