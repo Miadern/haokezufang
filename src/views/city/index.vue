@@ -8,31 +8,24 @@
       @click-left="onClickLeft"
     />
     <!-- 内容    :index-list="indexList"-->
-    <van-index-anchor index="#">当前城市</van-index-anchor>
-    <van-cell :title="cityNow" @click="sendCityFn(cityNow)" />
-    <van-index-anchor index="热">热门城市</van-index-anchor>
-    <van-cell
-      :title="item.label"
-      v-for="item in cityHot"
-      :key="item.label"
-      @click="sendCityFn(item.label)"
-    />
-    <van-index-bar
-      :index-list="indexList"
-      v-for="(item, index) in codeCity"
-      :key="index"
-    >
-      <van-index-anchor :index="indexList[index]">
-        {{ item.index }}</van-index-anchor
-      >
+    <van-index-bar :index-list="indexList" :sticky="false">
+      <van-index-anchor index="#">当前城市</van-index-anchor>
+      <van-cell :title="cityNow" @click="sendCityFn(cityNow)" />
+      <van-index-anchor index="热">热门城市</van-index-anchor>
       <van-cell
-        title="文本"
-        v-for="(item, index) in item.cname"
-        :key="index"
-        @click="sendCityFn(item)"
-      >
-        <template #title>{{ item }}</template>
-      </van-cell>
+        :title="item.label"
+        v-for="item in cityHot"
+        :key="item.label"
+        @click="sendCityFn(item.label)"
+      />
+      <div v-for="(item, index) in codeCity" :key="index">
+        <van-index-anchor :index="indexList[index + 2]">
+          {{ item.index }}</van-index-anchor
+        >
+        <van-cell title="文本" v-for="(item, index) in item.cname" :key="index">
+          <template #title>{{ item }}</template>
+        </van-cell>
+      </div>
     </van-index-bar>
   </div>
 </template>
@@ -73,7 +66,7 @@ export default {
   },
   data() {
     return {
-      cityNow: '北京',
+      cityNow: this.$route.query.cityAction || '北京',
       cityHot: [],
       cityList: [],
       indexList: [
@@ -162,5 +155,21 @@ export default {
   :deep(.van-icon) {
     color: #fff;
   }
+}
+:deep(.van-index-bar__index--active) {
+  color: #fff;
+  background-color: #21b97a;
+  border-radius: 100%;
+  display: inline-block;
+  font-size: 12px;
+  // line-height: 15px;
+  font-size: 14px;
+}
+
+:deep(.van-index-bar__index) {
+  padding: 0;
+  padding: 0;
+  margin: 3px 0;
+  font-size: 14px;
 }
 </style>

@@ -14,7 +14,8 @@
     <!-- 搜索栏 -->
     <van-search v-model="value" show-action placeholder="请输入小区或地址"
       ><template #label>
-        <div @click="mapFn">{{ cityAction }}<van-icon name="arrow-down" /></div
+        <div @click="mapFn(cityAction)">
+          {{ cityAction }}<van-icon name="arrow-down" /></div
       ></template>
       <template #action>
         <div @click="onSearch"><van-icon name="expand-o" /></div>
@@ -113,9 +114,12 @@ export default {
       // 跳转地图
     },
     // 搜索栏左边的跳转地图
-    mapFn() {
+    mapFn(cityAction) {
       this.$router.push({
-        path: '/city'
+        path: '/city',
+        query: {
+          cityAction
+        }
       })
     }
   }

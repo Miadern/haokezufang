@@ -106,7 +106,8 @@
         <template #icon>
           <van-icon
             name="star"
-            v-if="isFavorite"
+            v-if="isFavor"
+            :key="1"
             color="rgb(255,79,0)"
           /><van-icon v-else name="star-o" />收藏
         </template>
@@ -119,19 +120,25 @@
 
 <script>
 import cardVue from '@/components/card.vue'
-import { getHouseInfo, doYouFavorites } from '@/api/houseinfo'
+import {
+  getHouseInfo,
+  doYouFavorites,
+  doYouFavoritesAdd,
+  doYouFavoritesDel
+} from '@/api/houseinfo'
 
 export default {
   components: {
     cardVue
   },
-  computed: {
+  /*  computed: {
     isFavorite() {
       return this.isFavor
     }
-  },
+  }, */
   data() {
     return {
+      id: this.$route.query.houseId,
       isFavor: false,
       houseInfo: {},
       houseOriented: '',
@@ -181,13 +188,33 @@ export default {
     this.doYouFavorites()
   },
   methods: {
+    async doYouFavoritesAdd() {
+      try {
+        await doYouFavoritesAdd(this.id)
+        this.$toast.success('收藏成功')
+        this.doYouFavorites()
+      } catch (error) {
+        this.$toast.fail('请重试')
+        console.log(error)
+      }
+    },
+    async doYouFavoritesDel() {
+      try {
+        await doYouFavoritesDel(this.id)
+        this.$toast.success('取消收藏成功')
+        this.doYouFavorites()
+      } catch (error) {
+        this.$toast.fail('请重试')
+        console.log(error)
+      }
+    },
+
     onClickLeft() {
       this.$router.back()
     },
     async getHouseInfo() {
       try {
         const res = await getHouseInfo(this.$route.query.houseId)
-        console.log(res)
         this.houseInfo = res.data.body
         this.houseOriented = res.data.body.oriented[0]
         this.houseImg = res.data.body.houseImg
@@ -199,9 +226,14 @@ export default {
     async doYouFavorites() {
       const res = await doYouFavorites(this.$route.query.houseId)
       this.isFavor = res.data.body.isFavorite
-      console.log(res.data.body.isFavorite)
     },
-    editFavorite() {}
+    editFavorite() {
+      if (this.isFavor) {
+        this.doYouFavoritesDel()
+      } else {
+        this.doYouFavoritesAdd()
+      }
+    }
   }
 }
 </script>

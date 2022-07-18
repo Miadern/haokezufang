@@ -33,9 +33,7 @@ export default {
   },
   methods: {
     onClickLeft() {
-      this.$router.push({
-        path: 'profile'
-      })
+      this.$router.back()
     }
   },
   async created() {
