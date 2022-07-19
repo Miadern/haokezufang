@@ -31,6 +31,7 @@ import { getCommunity } from '@/api/publish'
 export default {
   data() {
     return {
+      // css状态改变
       cssChange: true,
       // 搜索栏val
       value: '',
@@ -76,8 +77,14 @@ export default {
 
 <style scoped lang="less">
 .main {
-  display: flex;
-  justify-content: end;
+  :deep(.van-search__content) {
+    padding-left: 100px;
+    transition: all 0.1s linear 0s;
+  }
+}
+:deep(.van-search__content) {
+  padding-left: 10px;
+  transition: all 0.1s linear 0s;
 }
 .change {
   padding-left: 100px;
