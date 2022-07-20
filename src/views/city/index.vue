@@ -10,7 +10,7 @@
     <!-- 内容    :index-list="indexList"-->
     <van-index-bar :index-list="indexList" :sticky="false">
       <van-index-anchor index="#">当前城市</van-index-anchor>
-      <van-cell :title="cityNow" @click="sendCityFn(cityNow)" />
+      <van-cell :title="cityNow" @click="sendCityFn()" />
       <van-index-anchor index="热">热门城市</van-index-anchor>
       <van-cell
         :title="item.label"
@@ -66,7 +66,7 @@ export default {
   },
   data() {
     return {
-      cityNow: this.$route.query.cityAction || '北京',
+      cityNow: JSON.parse(localStorage.getItem('cityAction')),
       cityHot: [],
       cityList: [],
       indexList: [
@@ -135,8 +135,8 @@ export default {
       this.$router.back()
     },
     sendCityFn(val) {
-      this.$router.push({
-        path: '/home',
+      localStorage.setItem('cityAction', JSON.stringify(val))
+      this.$router.back({
         query: {
           cityAction: val
         }

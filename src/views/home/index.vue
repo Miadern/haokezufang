@@ -76,11 +76,14 @@ export default {
       value: '',
       swiperList: [],
       getGroupsList: [],
-      cityAction: this.$route.query.cityAction || '北京',
+      cityAction: JSON.parse(localStorage.getItem('cityAction')),
       MapID: ''
     }
   },
   async created() {
+    if (!this.cityAction) {
+      localStorage.setItem('cityAction', JSON.stringify('北京'))
+    }
     // 获取轮播图列表
     try {
       const res = await getSwiper()

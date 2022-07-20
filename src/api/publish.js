@@ -14,3 +14,58 @@ export const getCommunity = (name, id) => {
     params: { name, id }
   })
 }
+
+// /user/houses
+/**
+ * 发布房屋
+ * @param {*} title
+ * @param {*} description
+ * @param {*} houseImg
+ * @param {*} supporting
+ * @param {*} price
+ * @param {*} size
+ * @param {*} floor
+ * @param {*} community
+ * @returns
+ */
+export const publishHouse = (
+  title,
+  description,
+  houseImg,
+  oriented,
+  supporting,
+  price,
+  roomType,
+  size,
+  floor,
+  community
+) => {
+  return request({
+    url: '/user/houses',
+    method: 'post',
+    data: {
+      title,
+      description,
+      houseImg,
+      oriented,
+      supporting,
+      price,
+      roomType,
+      size,
+      floor,
+      community
+    }
+  })
+}
+
+// /houses/image
+export const sendImg = (formData) => {
+  return request({
+    url: '/houses/image',
+    method: 'post',
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+}

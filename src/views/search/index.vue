@@ -19,7 +19,7 @@
         v-for="(item, index) in searchList"
         :key="index"
         :title="item.communityName"
-        @click="backFn(item.communityName)"
+        @click="backFn(item.communityName, item.community)"
       />
     </div>
   </div>
@@ -53,21 +53,21 @@ export default {
     },
     // 获取搜索返回的可选项
     async getCommunity() {
-      const {
-        data: { body }
-      } = await getCommunity(this.value, this.id)
-      this.searchList = body
+      const { data } = await getCommunity(this.value, this.id)
+      this.searchList = data.body
     },
     // 点击返回上一幕
     onCancel() {
       this.$router.back()
     },
     // 点击卡片后返回到上个页面
-    backFn(val) {
+    backFn(val, community) {
       this.$router.push({
         path: '/publish',
         query: {
-          val
+          val,
+          community,
+          id: this.id
         }
       })
     }
