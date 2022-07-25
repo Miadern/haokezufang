@@ -51,7 +51,39 @@
       </div>
     </div>
 
-    <div class="houseMap">小区：XXXX</div>
+    <div class="houseMap">
+      <p>小区：{{ houseInfo.community }}</p>
+
+      <!-- 地图 -->
+      <baidu-map
+        class="bm-view"
+        :center="center"
+        :zoom="zoom"
+        @moving="syncCenterAndZoom"
+        @moveend="syncCenterAndZoom"
+        @zoomend="syncCenterAndZoom"
+        :scroll-wheel-zoom="true"
+      >
+        <bm-marker
+          :style="{ width: '10px', height: '10px' }"
+          :position="centerNow"
+          :dragging="false"
+        >
+          <bm-label
+            :content="houseInfo.community"
+            :labelStyle="{
+              color: 'red',
+              backgroundColor: 'rgb(238, 93, 91)',
+              border: '1px solid rgb(255, 0, 0)',
+              padding: '5px 10px',
+              font: '12px arial, sans-serif',
+              color: 'rgb(255, 255, 255)'
+            }"
+            :offset="{ width: -35, height: 30 }"
+          />
+        </bm-marker>
+      </baidu-map>
+    </div>
     <div class="iconbox">
       <div class="header">
         <h4>房屋配套</h4>
@@ -138,6 +170,7 @@ export default {
   }, */
   data() {
     return {
+      width: 20,
       id: this.$route.query.houseId,
       isFavor: false,
       houseInfo: {},
@@ -180,7 +213,11 @@ export default {
           desc: '三室/100/东/南京路14号大院',
           houseCode: '8c492765-b478-fe23'
         }
-      ]
+      ],
+      // 地图
+      center: { lng: 116.404, lat: 39.915 },
+      zoom: 18,
+      centerNow: { lng: 116.404, lat: 39.915 }
     }
   },
   created() {
@@ -188,6 +225,15 @@ export default {
     this.doYouFavorites()
   },
   methods: {
+    // 让地图位置为小区位置
+
+    // 双向绑定地图
+    syncCenterAndZoom(e) {
+      const { lng, lat } = e.target.getCenter()
+      this.center.lng = lng
+      this.center.lat = lat
+      this.zoom = e.target.getZoom()
+    },
     async doYouFavoritesAdd() {
       try {
         await doYouFavoritesAdd(this.id)
@@ -215,9 +261,14 @@ export default {
     async getHouseInfo() {
       try {
         const res = await getHouseInfo(this.$route.query.houseId)
+        console.log(res)
         this.houseInfo = res.data.body
         this.houseOriented = res.data.body.oriented[0]
         this.houseImg = res.data.body.houseImg
+        this.center.lng = res.data.body.coord.longitude
+        this.center.lat = res.data.body.coord.latitude
+        this.centerNow.lng = res.data.body.coord.longitude
+        this.centerNow.lat = res.data.body.coord.latitude
       } catch (error) {
         console.log(error)
       }
@@ -339,6 +390,19 @@ export default {
 }
 // 地图区域
 .houseMap {
+  :deep(.BMapLabel) {
+    font: 12px arial, sans-serif !important;
+  }
+  padding: 4px 0 40px;
+  .bm-view {
+    width: 100%;
+    height: 100%;
+    /*  :deep(.marker) {
+    :deep(img) {
+      display: none !important;
+    }
+  } */
+  }
   background-color: #fff;
   font-size: 14px;
   height: 145px;

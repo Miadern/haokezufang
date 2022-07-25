@@ -19,90 +19,95 @@
     >
       <bm-scale anchor="BMAP_ANCHOR_BOTTOM_LEFT"></bm-scale>
       <bm-navigation anchor="BMAP_ANCHOR_BOTTOM_RIGHT"></bm-navigation>
-      <!--   <bm-marker
-        :position="{ lng: 116.404, lat: 39.915 }"
-        :dragging="true"
-        animation="BMAP_ANIMATION_BOUNCE"
-      >
-        <bm-label
-          content="我爱北京天安门"
-          :labelStyle="{ color: 'red', fontSize: '24px' }"
-          :offset="{ width: -35, height: 30 }"
-        />
-      </bm-marker> -->
-
-      <bm-marker
-        class="marker"
-        v-for="(item, index) in mapList"
-        :key="index"
-        :position="{ lng: item.coord.longitude, lat: item.coord.latitude }"
-        :dragging="false"
-        :icon="{ url: '@/assets/点.svg' }"
-      >
-        <bm-label
-          :offset="{ width: -40, height: -40 }"
-          :content="`${item.label}\r\n${item.count}套`"
-          @click="markerFn(item)"
-          :labelStyle="{
-            width: '70px',
-            height: '70px',
-            lineHeight: '1',
-            display: 'inline-block',
-            position: 'absolute',
-            borderRadius: '100%',
-            background: 'rgba(12,181,106,.9)',
-            color: '#fff',
-            border: '2px solid hsla(0,0%,100%,.8)',
-            textAlign: 'center',
-            cursor: 'pointer',
-            lineHeight: '31px',
-            whiteSpace: 'break-spaces'
-          }"
+      <div v-if="isMarkerShow">
+        <bm-marker
+          class="marker"
+          v-for="(item, index) in mapList"
+          :key="index"
+          :position="{ lng: item.coord.longitude, lat: item.coord.latitude }"
+          :dragging="false"
+          :icon="{ url: '@/assets/点.svg' }"
         >
-        </bm-label>
-      </bm-marker>
-
+          <bm-label
+            :offset="{ width: -40, height: -40 }"
+            :content="`${item.label}\r\n${item.count}套`"
+            @click="markerFn(item, index)"
+            :labelStyle="{
+              width: '70px',
+              height: '70px',
+              lineHeight: '1',
+              display: 'inline-block',
+              position: 'absolute',
+              borderRadius: '100%',
+              background: 'rgba(12,181,106,.9)',
+              color: '#fff',
+              border: '2px solid hsla(0,0%,100%,.8)',
+              textAlign: 'center',
+              cursor: 'pointer',
+              lineHeight: '31px',
+              whiteSpace: 'break-spaces'
+            }"
+          >
+          </bm-label>
+        </bm-marker>
+      </div>
       <!-- 最后的列表 -->
-      <bm-marker
-        class="marker"
-        v-for="(item, index) in mapListRes"
-        :key="index"
-        :position="{ lng: item.coord.longitude, lat: item.coord.latitude }"
-        :dragging="false"
-        :icon="{ url: '@/assets/点.svg' }"
-      >
-        <bm-label
-          :offset="{ width: -40, height: -40 }"
-          :content="`${item.label}\r\n${item.count}套`"
-          @click="markerFn(item)"
-          :labelStyle="{
-            height: '20px',
-            lineHeight: '19px',
-            width: '100px',
-            padding: '0 3px',
-            borderRadius: '3px',
-            position: 'absolute',
-            background: 'rgba(12,181,106,.9)',
-            cursor: 'pointer',
-            whiteSpace: 'nowrap'
-          }"
+      <div v-else>
+        <bm-marker
+          class="marker"
+          v-for="(item, index) in mapListRes"
+          :key="index"
+          :position="{ lng: item.coord.longitude, lat: item.coord.latitude }"
+          :dragging="false"
+          :icon="{ url: '@/assets/点.svg' }"
         >
-        </bm-label>
-      </bm-marker>
+          <bm-label
+            :offset="{ width: -40, height: -40 }"
+            :content="`${item.label}\r\n${item.count}套`"
+            @click="markerFn(item, index)"
+            :labelStyle="{
+              height: '20px',
+              lineHeight: '19px',
+              width: '100px',
+              padding: '0 3px',
+              borderRadius: '3px',
+              position: 'absolute',
+              background: 'rgba(12,181,106,.9)',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap'
+            }"
+          >
+          </bm-label>
+        </bm-marker>
+      </div>
     </baidu-map>
     <!-- 弹出层 -->
 
     <van-popup v-model="show" position="bottom" :style="{ height: '40%' }">
-      <van-cell title="房屋清单" value="更多房源" />
+      <van-cell
+        title="房屋清单"
+        value="更多房源"
+        @click="$router.push('/list')"
+      />
+      <cardVue
+        :List="item"
+        v-for="(item, index) in houseList"
+        :key="index"
+      ></cardVue>
     </van-popup>
   </div>
 </template>
 <!-- :offset="{ width: -35, height: 30 }" -->
 <script>
 import { getMapID } from '@/api/home'
+
 import { getMap, getFilerRes } from '@/api/map.js'
+import cardVue from '@/components/card.vue'
 
 export default {
+  components: {
+    cardVue
+  },
   async created() {
     await this.getMapID()
     this.getMap()
@@ -121,7 +126,8 @@ export default {
       // 弹出层
       show: false,
       // 步骤编码，初始为1，每次点击标签会+1进入下一个阶段
-      flag: 1
+      flag: 1,
+      isMarkerShow: true
     }
   },
   methods: {
@@ -132,8 +138,25 @@ export default {
       this.center.lat = lat
       this.zoom = e.target.getZoom()
     },
+
+    // 点击最后的图标
+    /*  async markerTwoFn(item, index) {
+      this.$toast.loading({
+        duration: 0, // 持续展示 toast
+        message: '加载中...',
+        forbidClick: true
+      })
+      try {
+        const res = await getFilerRes(item.value)
+        console.log(res)
+        // this.houseList = res.data.body
+        this.$toast.success('加载成功')
+      } catch (error) {
+        this.$toast.fail('加载失败')
+      }
+    }, */
     // 点击图标
-    async markerFn(item) {
+    async markerFn(item, index) {
       // 将获取的坐标和视图更新
 
       // 如果视角为11，13，16时的操作
@@ -172,25 +195,26 @@ export default {
         try {
           const res = await getMap(item.value)
           console.log(res)
-          this.mapList = []
           this.mapListRes = res.data.body
           this.center.lng = res.data.body[0].coord.longitude
           this.center.lat = res.data.body[0].coord.latitude
+          this.isMarkerShow = false
           this.$toast.success('加载成功')
         } catch (error) {
           this.$toast.fail('加载失败')
         }
       } else if (this.flag === 3) {
-        this.show = true
         this.$toast.loading({
           duration: 0, // 持续展示 toast
           message: '加载中...',
           forbidClick: true
         })
         try {
-          const res = await getFilerRes(item.value, 1, 10)
+          const res = await getFilerRes(this.mapListRes[index].value)
           console.log(res)
-          /*  this.houseList = res.body.list */
+          this.show = true
+          this.houseList = res.data.body.list
+          // this.houseList = res.data.body
           this.$toast.success('加载成功')
         } catch (error) {
           this.$toast.fail('加载失败')
