@@ -3,7 +3,7 @@
     <!-- 头部导航 -->
     <van-nav-bar
       class="navBar"
-      title="城市列表"
+      title="地图找房"
       left-arrow
       @click-left="onClickLeft"
     />
@@ -22,7 +22,12 @@
         <van-index-anchor :index="indexList[index + 2]">
           {{ item.index }}</van-index-anchor
         >
-        <van-cell title="文本" v-for="(item, index) in item.cname" :key="index">
+        <van-cell
+          title="文本"
+          v-for="(item, index) in item.cname"
+          :key="index"
+          @click="$toast('暂无房源')"
+        >
           <template #title>{{ item }}</template>
         </van-cell>
       </div>

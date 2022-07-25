@@ -87,13 +87,22 @@
       </div>
     </van-dropdown-menu>
     <!-- 主体列表部分 -->
-    <div class="mainBox">
-      <cardList
-        :List="item"
-        v-for="(item, index) in mainBoxList"
-        :key="index"
-      ></cardList>
-    </div>
+    <van-list
+      :immediate-check="false"
+      offset="100"
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      @load="onLoad"
+    >
+      <div class="mainBox">
+        <cardList
+          :List="item"
+          v-for="(item, index) in mainBoxList"
+          :key="index"
+        ></cardList>
+      </div>
+    </van-list>
     <!-- 底部按钮 -->
     <div class="footBar" v-show="isShowfootBar">
       <div class="resetBtn" @click="onReset_filter">清除</div>
@@ -199,6 +208,12 @@ export default {
       isShowfootBar: false,
       // 最终渲染的列表
       mainBoxList: [],
+      // 数据需要的index
+      start: 1,
+      end: 20,
+      // 下拉加载栏参数
+      loading: false,
+      finished: false,
 
       // 维护要使用的结果
       // 城市ID**
@@ -215,6 +230,42 @@ export default {
     }
   },
   methods: {
+    // 下拉触发下一页
+    async onLoad() {
+      this.start += 20
+      this.end += 20
+      // 刷新页面
+      this.$toast.loading({
+        duration: 0, // 持续展示 toast
+        message: '加载中...',
+        forbidClick: true
+      })
+      try {
+        const res = await getFilerRes(
+          this.id,
+          this.areaId,
+          this.subway,
+          this.rentTypeRes,
+          this.priceRes,
+          this.moreRes,
+          this.start,
+          this.end
+        )
+        if (res.data.body.list.length === 0) {
+          this.finished = true
+          this.$toast.success()
+          return
+        }
+        console.log(res)
+        this.mainBoxList = [...this.mainBoxList, ...res.data.body.list]
+        this.$toast.success()
+      } catch (error) {
+        this.$toast.fail('加载失败，请重试')
+      } finally {
+        this.loading = false
+      }
+    },
+
     // 如果跳转过来的query为home页面附带回来的，将执行此函数
     init() {
       this.rentTypeRes = this.$route.query.rentType
@@ -248,6 +299,8 @@ export default {
     },
     // 点击筛选界面中的确认
     onConfirm_filter() {
+      this.start = 1
+      this.end = 20
       // 关闭弹出层
       this.filterPop = false
       // 删除类名不显示高亮
@@ -276,8 +329,10 @@ export default {
       }
     },
 
-    // 多少价位的下拉按钮
+    // 多少价位的确认按钮
     onConfirm_price(val, index) {
+      this.start = 1
+      this.end = 20
       this.priceRes = val.value
       // this.rentTypeRes = this.rentTypeList[index].value
       this.$refs.down_1.toggleItem()
@@ -287,8 +342,10 @@ export default {
       this.$refs.down_1.toggleItem()
     },
 
-    // 合租还是整租的下拉按钮
+    // 合租还是整租的确认按钮
     onConfirm_rentType(val, index) {
+      this.start = 1
+      this.end = 20
       this.rentTypeRes = this.rentTypeList[index].value
       this.$refs.down_1.toggleItem()
       this.getFilerRes()
@@ -306,6 +363,9 @@ export default {
     },
     onSearch() {
       // 跳转地图
+      this.$router.push({
+        path: '/map'
+      })
     },
     // 搜索栏左边的跳转地图
     mapFn() {
@@ -315,7 +375,8 @@ export default {
     },
     // 第一个滚轮的确认和取消按钮
     onConfirm_1(value, index) {
-      console.log(index)
+      this.start = 1
+      this.end = 20
       if (index[0] === 1) {
         this.subway = value[value.length - 1].value
       } else {
@@ -332,7 +393,6 @@ export default {
     async getCondition() {
       const { data } = await getCondition(this.id)
       // 整租合租'
-      console.log(data)
       this.priceList = data.body.price
       this.rentTypeList = data.body.rentType
       this.roomTypeList = data.body.roomType
@@ -375,15 +435,18 @@ export default {
         forbidClick: true
       })
       try {
-        const { data } = await getFilerRes(
+        const res = await getFilerRes(
           this.id,
           this.areaId,
           this.subway,
           this.rentTypeRes,
           this.priceRes,
-          this.moreRes
+          this.moreRes,
+          this.start,
+          this.end
         )
-        this.mainBoxList = data.body.list
+        console.log(res)
+        this.mainBoxList = res.data.body.list
         this.$toast.success()
       } catch (error) {
         this.$toast.fail('加载失败，请重试')

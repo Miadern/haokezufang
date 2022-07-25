@@ -23,10 +23,28 @@ export const getCondition = (id) => {
 
  * @returns
  */
-export const getFilerRes = (id, area, subway, rentType, price, more) => {
+export const getFilerRes = (
+  cityId,
+  area,
+  subway,
+  rentType,
+  price,
+  more,
+  start,
+  end
+) => {
   return request({
     url: '/houses',
     method: 'get',
-    params: { id, area, subway, rentType, price, more }
+    params: {
+      cityId,
+      area,
+      subway,
+      rentType,
+      price,
+      more,
+      start,
+      end
+    }
   })
 }

@@ -123,6 +123,9 @@ export default {
     },
     onSearch() {
       // 跳转地图
+      this.$router.push({
+        path: '/map'
+      })
     },
     // 搜索栏左边的跳转地图
     mapFn(cityAction) {
